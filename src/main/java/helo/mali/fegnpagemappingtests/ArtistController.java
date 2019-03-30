@@ -1,6 +1,7 @@
 package helo.mali.fegnpagemappingtests;
 
 import helo.mali.fegnpagemappingtests.builder.ArtistBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -13,14 +14,15 @@ import java.util.List;
 @RestController
 public class ArtistController {
 
+  private final ArtistRepository artistRepository;
+
+  @Autowired
+  public ArtistController(ArtistRepository artistRepository) {
+    this.artistRepository = artistRepository;
+  }
+
   @GetMapping("/artists")
   public Page<Artist> getArtists(Pageable pageable){
-    List<Artist> artists = Arrays.asList(
-        ArtistBuilder.anArtist().withName("Dua Lipa").build(),
-        ArtistBuilder.anArtist().withName("Rita Ora").build(),
-        ArtistBuilder.anArtist().withName("Bebe Rexha").build()
-    );
-
-    return new PageImpl<>(artists, pageable, artists.size());
+    return artistRepository.find(pageable);
   }
 }
